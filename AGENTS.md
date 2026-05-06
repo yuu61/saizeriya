@@ -27,17 +27,17 @@ mock server, client library, and 3rd-party client app.
 The project standardises on **`vite-plus` (`vp`)** for format / lint / test —
 not ESLint, Prettier, or Vitest directly. Always go through the root scripts:
 
-| Task | Command |
-| --- | --- |
-| Format + autofix | `bun check:fix` |
-| Format check only | `bun run format:check` |
-| Lint | `bun run lint` (or `lint:fix`) |
-| Run tests | `bun run test` |
-| Watch tests | `bun run test:watch` |
-| Mock server dev | `bun dev` (serves `packages/server`, dashboard at `/dashboard`) |
-| Betterzeriya dev | `bun run dev:app` |
-| Build app | `bun run betterzeriya:build` |
-| Start built app | `bun run betterzeriya:start` |
+| Task              | Command                                                         |
+| ----------------- | --------------------------------------------------------------- |
+| Format + autofix  | `bun check:fix`                                                 |
+| Format check only | `bun run format:check`                                          |
+| Lint              | `bun run lint` (or `lint:fix`)                                  |
+| Run tests         | `bun run test`                                                  |
+| Watch tests       | `bun run test:watch`                                            |
+| Mock server dev   | `bun dev` (serves `packages/server`, dashboard at `/dashboard`) |
+| Betterzeriya dev  | `bun run dev:app`                                               |
+| Build app         | `bun run betterzeriya:build`                                    |
+| Start built app   | `bun run betterzeriya:start`                                    |
 
 Tests are written against `vite-plus/test` (Vitest-compatible API:
 `describe` / `it` / `expect`). The client tests exercise the real mock server
