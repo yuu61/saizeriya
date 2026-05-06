@@ -199,9 +199,11 @@ export const submitOfficialCart = async (
 ) => {
   const session = await createClientFromSnapshot(id, snapshot)
   while (session.client.getState().cart.length > 0) {
+    // oxlint-disable-next-line no-await-in-loop -- cart mutations must serialize
     await session.client.removeCartItem(0)
   }
   for (const item of cart) {
+    // oxlint-disable-next-line no-await-in-loop -- cart mutations must serialize
     await session.client.addItem(item.id, { count: item.count })
   }
   const state = await session.client.submitOrder()

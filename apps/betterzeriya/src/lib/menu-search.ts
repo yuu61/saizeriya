@@ -114,7 +114,7 @@ const tokenMatchesText = (token: string, text: string) => {
 
 export const matchesMenuSearch = (item: SearchableMenuItem, query: string) => {
   const tokens = getSearchTokens(query)
-  if (!tokens.length) {
+  if (tokens.length === 0) {
     return true
   }
 

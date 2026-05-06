@@ -87,15 +87,18 @@ export const filterMenuForServicePeriod = <T extends MenuAvailabilityItem>(
 ) => {
   const visibleBaseItems = items.filter((item) => !isStaleLunchMenuItem(item))
 
-  return visibleBaseItems
-    .filter((item) => {
-      if (period === 'regular') {
-        return !isLunchOnlyMenuItem(item)
-      }
-      return true
-    })
-    .map((item) => ({
-      ...item,
-      category: getDisplayCategory(item, period),
-    }))
+  return (
+    visibleBaseItems
+      .filter((item) => {
+        if (period === 'regular') {
+          return !isLunchOnlyMenuItem(item)
+        }
+        return true
+      })
+      // oxlint-disable-next-line no-map-spread -- copy-on-write to override category without mutating source
+      .map((item) => ({
+        ...item,
+        category: getDisplayCategory(item, period),
+      }))
+  )
 }

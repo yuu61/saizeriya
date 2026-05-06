@@ -1,9 +1,10 @@
 import type { CartItem, PageSubmitFields } from '../types'
 
+const pad2 = (value: number) => value.toString().padStart(2, '0')
+
 export const nowOrderTime = () => {
   const now = new Date()
-  const pad = (value: number) => value.toString().padStart(2, '0')
-  return `${now.getFullYear()}/${pad(now.getMonth() + 1)}/${pad(now.getDate())},${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
+  return `${now.getFullYear()}/${pad2(now.getMonth() + 1)}/${pad2(now.getDate())},${pad2(now.getHours())}:${pad2(now.getMinutes())}:${pad2(now.getSeconds())}`
 }
 
 export const createBaseFields = (proc: string, token?: string): Record<string, string> => ({

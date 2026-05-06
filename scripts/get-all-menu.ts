@@ -1201,6 +1201,7 @@ async function main() {
       }
 
       promises.push(
+        // oxlint-disable-next-line no-loop-func -- closure intentionally captures per-iteration const itemId and shared counters
         limit(async () => {
           if (knownItemIds.has(itemId)) {
             return
@@ -1221,7 +1222,9 @@ async function main() {
       )
     }
 
+    // oxlint-disable-next-line no-await-in-loop -- process shops sequentially to avoid hammering server
     await Promise.all(promises)
+    // oxlint-disable-next-line no-await-in-loop -- checkpoint write per shop
     await writeResults(results)
     console.log(
       `Finished shop ${shopId}: skipped ${skipped}, attempts ${attempts}/${total}, found ${knownItemIds.size}`,

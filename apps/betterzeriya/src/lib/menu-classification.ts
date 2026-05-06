@@ -7,10 +7,10 @@ export type AlcoholClassifiableMenuItem = {
 }
 
 const normalizeClassificationText = (value: string) =>
-  value.normalize('NFKC').replace(/\s+/g, '').toUpperCase()
+  value.normalize('NFKC').replaceAll(/\s+/g, '').toUpperCase()
 
 const nonAlcoholKeywords = ['ノンアルコール', 'ノンアル', 'NONALCOHOL', 'NON-ALCOHOL'].map(
-  normalizeClassificationText,
+  (value) => normalizeClassificationText(value),
 )
 
 const alcoholKeywords = [
@@ -37,7 +37,7 @@ const alcoholKeywords = [
   'ドンラファエロ',
   'グラッパ',
   '氷結',
-].map(normalizeClassificationText)
+].map((value) => normalizeClassificationText(value))
 
 export const isAlcoholMenuItem = (item: AlcoholClassifiableMenuItem) => {
   if (item.alcoholCheck !== undefined) {
@@ -46,7 +46,7 @@ export const isAlcoholMenuItem = (item: AlcoholClassifiableMenuItem) => {
 
   const text = [item.name, item.kana, item.category, ...(item.tags ?? [])]
     .filter((value): value is string => Boolean(value))
-    .map(normalizeClassificationText)
+    .map((value) => normalizeClassificationText(value))
     .join(' ')
 
   if (!text || nonAlcoholKeywords.some((keyword) => text.includes(keyword))) {

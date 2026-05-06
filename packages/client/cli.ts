@@ -127,12 +127,12 @@ const createCookieFetch = (initialCookies: CookieEntry[] = []) => {
 const parseNumberOption = (args: string[], name: string) => {
   const index = args.indexOf(name)
   if (index === -1) {
-    return undefined
+    return
   }
   const value = args[index + 1]
   const parsed = Number(value)
   if (!Number.isInteger(parsed)) {
-    throw new Error(`${name} requires an integer value`)
+    throw new TypeError(`${name} requires an integer value`)
   }
   return parsed
 }
@@ -341,6 +341,7 @@ const runRepl = async (
   console.log(`Session "${name}" is ready. Type help for commands.`)
 
   try {
+    /* oxlint-disable no-await-in-loop -- REPL: prompt → command → save are serial by design */
     while (true) {
       const line = await rl.question(`saizeriya:${name}> `)
       try {
@@ -353,6 +354,7 @@ const runRepl = async (
         console.error((error as Error).message)
       }
     }
+    /* oxlint-enable no-await-in-loop */
   } finally {
     rl.close()
   }
@@ -434,7 +436,9 @@ const main = async () => {
   }
 }
 
-main().catch((error) => {
+try {
+  await main()
+} catch (error) {
   console.error((error as Error).message)
   process.exitCode = 1
-})
+}

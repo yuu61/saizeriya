@@ -5,7 +5,7 @@ describe('createQueueLocker', () => {
   it('runs queued tasks sequentially', async () => {
     const queue = createQueueLocker()
     const events: string[] = []
-    let releaseFirst: () => void = () => {}
+    let releaseFirst: () => void
     const waitFirst = new Promise<void>((resolve) => {
       releaseFirst = resolve
     })
@@ -16,7 +16,7 @@ describe('createQueueLocker', () => {
       events.push('end1')
       return 1
     })
-    const second = queue(async () => {
+    const second = queue(() => {
       events.push('start2')
       return 2
     })
@@ -24,7 +24,7 @@ describe('createQueueLocker', () => {
     await Promise.resolve()
     expect(events).toEqual(['start1'])
 
-    releaseFirst()
+    releaseFirst!()
     await first
     await second
 
@@ -34,10 +34,10 @@ describe('createQueueLocker', () => {
   it('continues after a rejected task', async () => {
     const queue = createQueueLocker()
 
-    const first = queue(async () => {
+    const first = queue(() => {
       throw new Error('fail')
     })
-    const second = queue(async () => 'ok')
+    const second = queue(() => 'ok')
 
     await expect(first).rejects.toThrow('fail')
     await expect(second).resolves.toBe('ok')

@@ -114,6 +114,7 @@ export interface ServerOptions {
 }
 
 const defaultMenuItems: MenuItem[] = (menuData as (MenuSeedItem | FetchedMenuItem)[])
+  // oxlint-disable-next-line no-map-spread -- module-init seed normalization, runs once
   .map((item) => {
     if ('item_data' in item && item.item_data) {
       return {
@@ -141,8 +142,6 @@ const json = (value: unknown) =>
     },
   })
 
-const toId = (value: unknown) => String(value)
-
 const cloneCart = (cart: CartLine[]) => cart.map((item) => ({ ...item }))
 
 const dataBaseDir = path.resolve(fileURLToPath(new URL('../assets/data', import.meta.url)))
@@ -159,10 +158,13 @@ const pageComponents = {
 } satisfies Record<Exclude<Page, 'order'>, () => unknown>
 
 const setInputValue = (html: string, id: string, value: string) =>
-  html.replace(new RegExp(`(<input[^>]*id="${id}"[^>]*value=")[^"]*(")`, 'g'), `$1${value}$2`)
+  html.replaceAll(new RegExp(`(<input[^>]*id="${id}"[^>]*value=")[^"]*(")`, 'g'), `$1${value}$2`)
 
 const setNamedInputValue = (html: string, name: string, value: string) =>
-  html.replace(new RegExp(`(<input[^>]*name="${name}"[^>]*value=")[^"]*(")`, 'g'), `$1${value}$2`)
+  html.replaceAll(
+    new RegExp(`(<input[^>]*name="${name}"[^>]*value=")[^"]*(")`, 'g'),
+    `$1${value}$2`,
+  )
 
 const escapeHTML = (value: unknown) =>
   String(value)
@@ -531,11 +533,11 @@ export class Server {
   }
 
   #cartFromOrderForm(form: FormData) {
-    const ids = form.getAll('item[id][]').map(toId)
-    const counts = form.getAll('item[count][]').map(toId)
-    const reorders = form.getAll('item[reorder][]').map(toId)
-    const modIds = form.getAll('item[mod_id][]').map(toId)
-    const modCounts = form.getAll('item[mod_count][]').map(toId)
+    const ids = form.getAll('item[id][]').map((v) => String(v))
+    const counts = form.getAll('item[count][]').map((v) => String(v))
+    const reorders = form.getAll('item[reorder][]').map((v) => String(v))
+    const modIds = form.getAll('item[mod_id][]').map((v) => String(v))
+    const modCounts = form.getAll('item[mod_count][]').map((v) => String(v))
 
     return ids.map<CartLine>((id, index) => ({
       id,
@@ -555,9 +557,9 @@ export class Server {
 
   #rewriteHTMLForTable(html: string, table: Table, nextId: string) {
     let rewritten = html
-      .replace(/action="\.\/\?[^"]*"/g, `action="./?${nextId}"`)
-      .replace(/data-shop="[^"]*"/g, `data-shop="${table.state.shopId}"`)
-      .replace(/data-tbl="[^"]*"/g, `data-tbl="${table.state.tableId}"`)
+      .replaceAll(/action="\.\/\?[^"]*"/g, `action="./?${nextId}"`)
+      .replaceAll(/data-shop="[^"]*"/g, `data-shop="${table.state.shopId}"`)
+      .replaceAll(/data-tbl="[^"]*"/g, `data-tbl="${table.state.tableId}"`)
 
     rewritten = setInputValue(rewritten, 'shop-id', table.state.shopId.toString())
     rewritten = setInputValue(rewritten, 'table-no', table.state.tableId.toString())
@@ -584,7 +586,7 @@ export class Server {
   #createReceiptBarcode(table: Table) {
     const control = table.state.sessionId
       .split('')
-      .map((char) => char.charCodeAt(0) % 10)
+      .map((char) => char.codePointAt(0) % 10)
       .join('')
       .slice(0, 6)
       .padEnd(6, '0')
@@ -658,7 +660,7 @@ export class Server {
       )
       .replace(/(<p class="count">\s*<span>)[\s\S]*?(<\/span>点<\/p>)/, `$1${count}$2`)
       .replace(
-        /(<p class="amount">[\s\S]*?合計(?:&nbsp;|\s|\u00a0)*<span>)[\s\S]*?(<\/span>\s*円 \(税込\)\s*<\/p>)/,
+        /(<p class="amount">[\s\S]*?合計(?:&nbsp;|\s|\u00A0)*<span>)[\s\S]*?(<\/span>\s*円 \(税込\)\s*<\/p>)/,
         `$1${formatAmount(total)}$2`,
       )
   }
@@ -679,7 +681,7 @@ export class Server {
       .replace(/(<div class="list"[^>]*>\s*<table>\s*<tbody>)[\s\S]*?(<\/tbody>)/, `$1${rows}$2`)
       .replace(/(<p class="count">\s*<span>)[\s\S]*?(<\/span>点<\/p>)/, `$1${count}$2`)
       .replace(
-        /(<p class="amount">[\s\S]*?合計(?:&nbsp;|\s|\u00a0)*<span>)[\s\S]*?(<\/span>\s*円 \(税込\)\s*<\/p>)/,
+        /(<p class="amount">[\s\S]*?合計(?:&nbsp;|\s|\u00A0)*<span>)[\s\S]*?(<\/span>\s*円 \(税込\)\s*<\/p>)/,
         `$1${formatAmount(total)}$2`,
       )
   }

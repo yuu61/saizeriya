@@ -354,7 +354,7 @@
 		try {
 			const parsed = JSON.parse(rawCart);
 			if (!Array.isArray(parsed)) {
-				throw new Error('Invalid cart');
+				throw new TypeError('Invalid cart');
 			}
 
 			localCart = parsed
@@ -528,7 +528,7 @@
 		let results = pick();
 		if (excludeAlcoholFromGacha) {
 			let retries = 0;
-			while (results.some(isAlcoholMenuItem) && retries < 20) {
+			while (results.some((item) => isAlcoholMenuItem(item)) && retries < 20) {
 				results = pick();
 				retries++;
 			}
@@ -542,6 +542,7 @@
 	const addGachaToCart = async () => {
 		gachaDialog?.close();
 		for (const item of gachaResults) {
+			// oxlint-disable-next-line no-await-in-loop -- cart adds must serialize via locker
 			await addItem(item);
 		}
 	};

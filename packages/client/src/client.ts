@@ -264,8 +264,8 @@ export const createClient = async ({
       return getState()
     })
 
-  const removeCartItem = async (index: number) =>
-    await locker(async () => {
+  const removeCartItem = (index: number) =>
+    locker(() => {
       if (!Number.isInteger(index) || index < 0 || index >= state.cart.length) {
         throw new Error('Cart item was not found')
       }
@@ -334,6 +334,7 @@ export const createClient = async ({
 
   const getState = (): ClientState => ({
     ...state,
+    // oxlint-disable-next-line no-map-spread -- defensive copy-on-read of cart entries
     cart: state.cart.map((item) => ({ ...item })),
   })
 

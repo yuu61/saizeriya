@@ -5,9 +5,8 @@ export const createFetch = (fetchSource?: FetchSource): typeof globalThis.fetch 
       ? async (input, init) => {
           if (input instanceof Request) {
             return await fetchSource(input)
-          } else {
-            return await fetchSource(new Request(input.toString(), init))
           }
+          return await fetchSource(new Request(input.toString(), init))
         }
       : globalThis.fetch
   ) as typeof globalThis.fetch

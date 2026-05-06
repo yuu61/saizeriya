@@ -258,7 +258,7 @@
 		}
 	};
 
-	const stopScanner = async () => {
+	const stopScanner = () => {
 		scannerActive = false;
 		scanner?.stop();
 	};

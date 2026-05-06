@@ -110,7 +110,7 @@ export class PageParser {
         const cells = row.querySelectorAll('td')
         const name = cells[0]?.text.trim() ?? ''
         const count = Number.parseInt(cells[1]?.text.trim() ?? '0', 10)
-        const price = Number.parseInt((cells[2]?.text.trim() ?? '0').replace(/,/g, ''), 10)
+        const price = Number.parseInt((cells[2]?.text.trim() ?? '0').replaceAll(',', ''), 10)
         return { name, count, price }
       })
       .filter((line) => line.name && Number.isFinite(line.count))
@@ -120,10 +120,9 @@ export class PageParser {
       10,
     )
     const total = Number.parseInt(
-      (this.root.querySelector('#body-section .amount .amount span')?.text.trim() ?? '0').replace(
-        /,/g,
-        '',
-      ),
+      (
+        this.root.querySelector('#body-section .amount .amount span')?.text.trim() ?? '0'
+      ).replaceAll(',', ''),
       10,
     )
 
@@ -143,7 +142,7 @@ export class PageParser {
     const barcodeValue = this.root
       .querySelector('.receipt-page .barcode p')
       ?.text.trim()
-      .replace(/\s/g, '')
+      .replaceAll(/\s/g, '')
 
     return {
       barcodeValue: barcodeValue || undefined,

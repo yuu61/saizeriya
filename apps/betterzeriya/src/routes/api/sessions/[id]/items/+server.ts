@@ -6,6 +6,6 @@ const disabled = () =>
     { status: 410 },
   )
 
-export const POST: RequestHandler = async () => disabled()
+export const POST: RequestHandler = () => disabled()
 
-export const DELETE: RequestHandler = async () => disabled()
+export const DELETE: RequestHandler = () => disabled()
