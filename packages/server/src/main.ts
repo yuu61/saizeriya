@@ -1,3 +1,5 @@
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { Hono } from 'hono'
 import menuData from './data/menu.json'
 import { Account } from './template/Account'
@@ -143,7 +145,7 @@ const toId = (value: unknown) => String(value)
 
 const cloneCart = (cart: CartLine[]) => cart.map((item) => ({ ...item }))
 
-const assetFile = (path: string) => Bun.file(new URL(`../assets/${path}`, import.meta.url))
+const dataBaseDir = path.resolve(fileURLToPath(new URL('../assets/data', import.meta.url)))
 
 const pageComponents = {
   account: Account,
@@ -438,11 +440,15 @@ export class Server {
         })
       })
       .get('/data/:path{.+}', async (c) => {
-        const path = c.req.param('path')
-        if (path.includes('..')) {
+        const requestedPath = c.req.param('path')
+        if (requestedPath.includes('\0')) {
           return c.text('Invalid path', 400)
         }
-        const file = assetFile(`data/${path}`)
+        const resolvedPath = path.resolve(dataBaseDir, requestedPath)
+        if (resolvedPath !== dataBaseDir && !resolvedPath.startsWith(dataBaseDir + path.sep)) {
+          return c.text('Invalid path', 400)
+        }
+        const file = Bun.file(resolvedPath)
         if (!(await file.exists())) {
           return c.text('File not found', 404)
         }
