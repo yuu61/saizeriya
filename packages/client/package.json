@@ -40,9 +40,9 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
-    "typescript": "^5"
+    "typescript": "^6"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^6"
   }
 }
