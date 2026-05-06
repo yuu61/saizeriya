@@ -8,9 +8,9 @@
     "dev": "bun --watch src/main.ts"
   },
   "dependencies": {
-    "hono": "^4.11.3",
+    "hono": "^4.12.17",
     "node-console-progress-bar-tqdm": "^1.0.4",
-    "p-limit": "^7.2.0"
+    "p-limit": "^7.3.0"
   },
   "devDependencies": {
     "@types/bun": "latest"

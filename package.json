@@ -31,6 +31,6 @@
     "vite-plus": "^0.1.20"
   },
   "peerDependencies": {
-    "typescript": "^6"
+    "typescript": "^6.0.3"
   }
 }

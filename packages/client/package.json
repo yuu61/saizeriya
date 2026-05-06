@@ -36,10 +36,10 @@
     "test:watch": "vp test watch"
   },
   "dependencies": {
-    "node-html-parser": "^7.0.2"
+    "node-html-parser": "^7.1.0"
   },
   "devDependencies": {
-    "@types/node": "^24.10.1",
+    "@types/node": "^24.12.2",
     "typescript": "^6"
   },
   "peerDependencies": {
